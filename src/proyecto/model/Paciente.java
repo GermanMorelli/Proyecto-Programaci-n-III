@@ -11,17 +11,15 @@ public class Paciente {
     private String direccion;
     private int edad;
     private String telefono;
-    private LocalDate fechaNacimiento;
 
     public Paciente() {}
 
-    public Paciente(int id, String nombre, String direccion, int edad, String telefono, LocalDate fechaNacimiento) {
+    public Paciente(int id, String nombre, String direccion, int edad, String telefono) {
         this.id = id;
         this.nombre = nombre;
         this.direccion = direccion;
         this.edad = edad;
         this.telefono = telefono;
-        this.fechaNacimiento = fechaNacimiento;
     }
 
     public int getId() { return id; }
@@ -38,9 +36,6 @@ public class Paciente {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
-    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
     @Override
     public String toString() {

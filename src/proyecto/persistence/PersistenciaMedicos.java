@@ -5,11 +5,14 @@ import proyecto.model.Doctor;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
+import proyecto.validacionDatos.validacionMedico;
 
 /**
  * Persistencia de medicos en CSV (id|nombre|especialidad)
  */
 public class PersistenciaMedicos extends PersistenciaBase {
+    private validacionMedico vm;
     public PersistenciaMedicos(Path file) throws IOException { super(file); }
 
     public List<Doctor> obtenerTodos() throws IOException {
@@ -25,9 +28,12 @@ public class PersistenciaMedicos extends PersistenciaBase {
     public Optional<Doctor> obtenerPorId(int id) throws IOException {
         return obtenerTodos().stream().filter(d->d.getId()==id).findFirst();
     }
-
+    
+    
     public void agregar(Doctor d) throws IOException {
         if (d.getId()<=0) throw new IllegalArgumentException("ID debe ser positivo");
+        if (vm.validaNombreMedico(d.getNombre()) == false) throw new IllegalArgumentException("Nombre erroneo");
+        if (vm.validaEspecialidad(d.getEspecialidad()) == false) throw new IllegalArgumentException("Especialidad erronea");
         if (obtenerPorId(d.getId()).isPresent()) throw new IllegalArgumentException("ID duplicado");
         appendLine(String.join("|", String.valueOf(d.getId()), safe(d.getNombre()), safe(d.getEspecialidad())));
     }

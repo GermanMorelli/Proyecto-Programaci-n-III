@@ -7,11 +7,11 @@ public class Equipo {
     private int id;
     private String nombre;
     private String descripcion;
-    private boolean disponible;
+    private int disponible;
 
     public Equipo() {}
 
-    public Equipo(int id, String nombre, String descripcion, boolean disponible) {
+    public Equipo(int id, String nombre, String descripcion, int disponible) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -24,11 +24,12 @@ public class Equipo {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public boolean isDisponible() { return disponible; }
-    public void setDisponible(boolean disponible) { this.disponible = disponible; }
+
+    public int getDisponible() { return disponible; }
+    public void setDisponible(int disponible) { this.disponible = disponible; }
 
     @Override
     public String toString() {
-        return id + " | " + nombre + (disponible ? " (disp)" : " (no)");
+        return id + " | " + nombre + (disponible );
     }
 }
