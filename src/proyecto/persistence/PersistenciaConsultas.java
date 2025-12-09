@@ -59,12 +59,16 @@ public class PersistenciaConsultas extends PersistenciaBase {
     }
 
 
-
+    public Optional<Consulta> obtenerPorId(int id) throws IOException {
+            return obtenerTodos().stream().filter(x->x.getId()==id).findFirst();
+        }
+    
 
     public void agregar(Consulta c) throws IOException {
         if (c.getId()<=0) throw new IllegalArgumentException("ID debe ser positivo");
         if (c.getPacienteId()<=0) throw new IllegalArgumentException("ID debe ser positivo");
         if (c.getDoctorId()<=0) throw new IllegalArgumentException("ID debe ser positivo");
+        if (obtenerPorId(c.getId()).isPresent()) throw new IllegalArgumentException("ID duplicado");
         // no check uniqueness for simplicity
         appendLine(toLine(c));
     }

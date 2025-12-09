@@ -40,8 +40,8 @@ public class MainGUI extends JFrame {
     // Tables models
     private DefaultTableModel pacientesModel = new DefaultTableModel(new String[]{"ID","Nombre","Edad","Tel","Direccion"},0);
     private DefaultTableModel medicosModel = new DefaultTableModel(new String[]{"ID","Nombre","Especialidad"},0);
-    private DefaultTableModel consultasModel = new DefaultTableModel(new String[]{"ID","Paciente","Doctor","Fecha"},0);
-    private DefaultTableModel equiposModel = new DefaultTableModel(new String[]{"ID","Nombre","Disp"},0);
+    private DefaultTableModel consultasModel = new DefaultTableModel(new String[]{"ID","Paciente","Doctor","Fecha","Motivo","Notas"},0);
+    private DefaultTableModel equiposModel = new DefaultTableModel(new String[]{"ID","Nombre","Disp","Desc"},0);
     private DefaultTableModel inventarioModel = new DefaultTableModel(new String[]{"ID","Nombre","Cantidad"},0);
 
     public MainGUI() {
@@ -70,8 +70,6 @@ public class MainGUI extends JFrame {
 
         // Nuevas pestañas de búsqueda (no cambian la estructura de las existentes)
         tabs.addTab("Buscar Pacientes", buildBuscarPacientesPanel());
-        tabs.addTab("Buscar Consultas", buildBuscarConsultasPanel());
-        // ... tus tabs anteriores ...
         tabs.addTab("Buscar Consultas", buildBuscarConsultasPanel());
 
         // AGREGA ESTA LÍNEA:
@@ -153,12 +151,14 @@ public class MainGUI extends JFrame {
                 String sid = JOptionPane.showInputDialog(this, "ID:");
                 if (sid==null) return;
                 int id = Integer.parseInt(sid);
-
                 String nombre = JOptionPane.showInputDialog(this, "Nombre:");
+                if (nombre==null) return;
                 String edadS = JOptionPane.showInputDialog(this, "Edad:");
+                if (edadS==null) return;
                 String tel = JOptionPane.showInputDialog(this, "Telefono:");
+                if (tel==null) return;
                 String direccion = JOptionPane.showInputDialog(this, "Dirección");
-
+                if (direccion==null) return;
                 // Validaciones
                 validarNombrePaciente(nombre);
                 int edad = validarEdad(edadS);
@@ -239,11 +239,17 @@ public class MainGUI extends JFrame {
 
         add.addActionListener(a->{
             try {
-                int id = Integer.parseInt(JOptionPane.showInputDialog(this, "ID:" ));
+                String sid = JOptionPane.showInputDialog(this, "ID:");
+                if (sid==null) return;
+                int id = Integer.parseInt(sid);
                 String nombre = JOptionPane.showInputDialog(this, "Nombre:");
+                if (nombre==null) return;
                 String esp = JOptionPane.showInputDialog(this, "Especialidad:");
+                if (esp==null) return;
                 pm.agregar(new Doctor(id,nombre,esp));
                 refreshMedicos();
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "ID inválida. Debe ser un número.");
             } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage()); }
         });
 
@@ -253,8 +259,10 @@ public class MainGUI extends JFrame {
                 if (row<0) { JOptionPane.showMessageDialog(this, "Selecciona un doctor"); return; }
                 int id = Integer.parseInt(medicosModel.getValueAt(row,0).toString());
                 var list = pm.obtenerTodos();
+                if (JOptionPane.showConfirmDialog(this, "Confirmar eliminar ID="+id)==JOptionPane.YES_OPTION){
                 list.removeIf(d->d.getId()==id);
                 pm.saveAll(list);
+                }
                 refreshMedicos();
             } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage()); }
         });
@@ -278,13 +286,22 @@ public class MainGUI extends JFrame {
 
         add.addActionListener(a->{
             try {
-                int id = Integer.parseInt(JOptionPane.showInputDialog(this, "ID:" ));
-                int pid = Integer.parseInt(JOptionPane.showInputDialog(this, "Paciente ID:" ));
-                int did = Integer.parseInt(JOptionPane.showInputDialog(this, "Doctor ID:" ));
+                String sid = JOptionPane.showInputDialog(this, "ID:");
+                if (sid==null) return;
+                int id = Integer.parseInt(sid);
+                String spid = JOptionPane.showInputDialog(this, "Paciente ID:" );
+                if (spid==null) return;
+                int pid = Integer.parseInt(spid);
+                String sdid = JOptionPane.showInputDialog(this, "Doctor ID:" );
+                if (sdid==null) return;
+                int did = Integer.parseInt(sdid);
                 String fecha = JOptionPane.showInputDialog(this, "Fecha y hora (YYYY-MM-DDTHH:MM)");
+                if (fecha==null) return;
                 LocalDateTime dt = validarFechaConsulta(fecha);
                 String motivo = JOptionPane.showInputDialog(this, "Motivo:");
+                if (motivo==null) return;
                 String notas = JOptionPane.showInputDialog(this, "Notas:");
+                if (notas==null) return;
                 pc.agregar(new Consulta(id,pid,did,dt,motivo,notas));
                 refreshConsultas();
             } catch (NumberFormatException nfe) {
@@ -300,8 +317,10 @@ public class MainGUI extends JFrame {
                 if (row<0) { JOptionPane.showMessageDialog(this, "Selecciona una consulta"); return; }
                 int id = Integer.parseInt(consultasModel.getValueAt(row,0).toString());
                 var list = pc.obtenerTodos();
+                if (JOptionPane.showConfirmDialog(this, "Confirmar eliminar ID="+id)==JOptionPane.YES_OPTION){
                 list.removeIf(c->c.getId()==id);
                 pc.saveAll(list);
+                }
                 refreshConsultas();
             } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage()); }
         });
@@ -332,14 +351,18 @@ public class MainGUI extends JFrame {
 
         add.addActionListener(a->{
             try {
-                int id = Integer.parseInt(JOptionPane.showInputDialog(this, "ID:" ));
+                String sid = JOptionPane.showInputDialog(this, "ID:" );
+                if (sid==null) return;
+                int id = Integer.parseInt(sid);
                 String nombre = JOptionPane.showInputDialog(this, "Nombre:");
+                if (nombre==null) return;
                 String dispoS = JOptionPane.showInputDialog(this, "Disponibilidad");
+                if (dispoS==null) return;
+                int disponibilidad = Integer.parseInt(dispoS);
                 String desc = JOptionPane.showInputDialog(this, "Descripcion:");
-
+                if (desc==null) return;
                 // Validación
                 validarEquipo(nombre, dispoS);
-                int disponibilidad = Integer.parseInt(dispoS);
 
                 pe.agregar(new Equipo(id,nombre,desc,disponibilidad));
                 refreshEquipos();
@@ -360,9 +383,10 @@ public class MainGUI extends JFrame {
                 Equipo E01d = oe.get();
 
                 String dispoS = JOptionPane.showInputDialog(this, "Disponibles" , String.valueOf(E01d.getDisponible()));
+                if (dispoS==null) return;
+                int disp = Integer.parseInt(dispoS);
                 // Validar nueva cantidad antes de settear
                 validarEquipo(E01d.getNombre(), dispoS); // valida disponibilidad y que el nombre existente sea válido
-                int disp = Integer.parseInt(dispoS);
                 E01d.setDisponible(disp);
                 pe.actualizar(E01d); refreshEquipos();
             } catch (NumberFormatException nfe) {
@@ -497,7 +521,7 @@ public class MainGUI extends JFrame {
         try {
             var list = pc.obtenerTodos();
             consultasModel.setRowCount(0);
-            for (Consulta c: list) consultasModel.addRow(new Object[]{c.getId(), c.getPacienteId(), c.getDoctorId(), c.getFecha()});
+            for (Consulta c: list) consultasModel.addRow(new Object[]{c.getId(), c.getPacienteId(), c.getDoctorId(), c.getFecha(), c.getMotivo(), c.getNotas()});
         } catch (Exception e) { JOptionPane.showMessageDialog(this, "Error: " + e.getMessage()); }
     }
 
@@ -517,7 +541,7 @@ public class MainGUI extends JFrame {
         try {
             var list = pe.obtenerTodos();
             equiposModel.setRowCount(0);
-            for (Equipo e: list) equiposModel.addRow(new Object[]{e.getId(), e.getNombre(), e.getDisponible()});
+            for (Equipo e: list) equiposModel.addRow(new Object[]{e.getId(), e.getNombre(), e.getDisponible(), e.getDescripcion()});
         } catch (Exception e) { JOptionPane.showMessageDialog(this, "Error: " + e.getMessage()); }
     }
 
