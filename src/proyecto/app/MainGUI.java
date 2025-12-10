@@ -30,6 +30,13 @@ import java.util.logging.Logger;
  * - Validación de cantidad en inventario al actualizar.
  * - Pestañas adicionales: "Buscar Pacientes" y "Buscar Consultas" (usan los métodos de filtrado ya existentes).
  */
+
+/**
+ * @author German Morelli
+ * @author Arturo Lopez
+ */
+
+
 public class MainGUI extends JFrame {
     private PersistenciaPacientes pp;
     private PersistenciaMedicos pm;
